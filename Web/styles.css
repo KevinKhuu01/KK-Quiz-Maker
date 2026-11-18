@@ -295,6 +295,21 @@ pre {
 .instruction-step-description { color: var(--color-text-muted); }
 .instruction-step-action { margin-top: 12px; }
 
+.instruction-shortcuts { margin-top: 26px; }
+
+.shortcut-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+}
+
+.shortcut-table th, .shortcut-table td { padding: 11px 16px; text-align: left; }
+.shortcut-table th { color: var(--color-text-muted); font-size: 13px; font-weight: 500; }
+.shortcut-table tr + tr td, .shortcut-table tbody tr:first-child td { border-top: 1px solid var(--color-border); }
+.shortcut-table td:first-child { width: 38%; color: var(--color-text-muted); font-size: 13px; }
+
 .template-controls { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-top: 14px; }
 .question-count-input { width: 110px; background: var(--color-background); }
 .prompt-label { margin-top: 14px; }

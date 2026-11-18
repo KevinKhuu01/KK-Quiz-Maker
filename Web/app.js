@@ -48,6 +48,13 @@ const ICON_PATHS = {
 
 const DEFAULT_TEMPLATE_QUESTION_COUNT = 20;
 const MAXIMUM_TEMPLATE_QUESTION_COUNT = 200;
+const KEYBOARD_SHORTCUTS = [
+  { action: "Choose an answer", keys: ["A–Z", "1–9"] },
+  { action: "Continue", keys: ["Return"] },
+  { action: "Previous question", keys: ["←"] },
+  { action: "Pause or resume the timer", keys: ["P"] },
+  { action: "Leave the quiz", keys: ["Esc"] },
+];
 
 function createTemplatePrompt(questionCount) {
   return `Create a multiple choice quiz from the content I attached or included with this message.
@@ -486,7 +493,7 @@ function renderHomePage() {
     createElement("div", { className: "page-inner" },
       createElement("header", { className: "page-header" },
         createElement("div", {},
-          createElement("h1", { className: "page-title" }, "Quizzes"),
+          createElement("h1", { className: "page-title" }, "Quiz Maker"),
           store.quizzes.length > 0 && createElement("p", { className: "page-subtitle" }, pluralize(store.quizzes.length, "quiz").replace("quizs", "quizzes"))),
         store.quizzes.length > 0 && newQuizButton),
       content));
@@ -631,6 +638,26 @@ function createInstructionStep(stepNumber, title, description, ...stepContent) {
       stepContent));
 }
 
+function createKeyboardShortcutTable() {
+  const createKeyCell = (keyNames) => createElement("td", {},
+    keyNames.flatMap((keyName, keyIndex) => [
+      keyIndex > 0 && " or ",
+      createElement("kbd", {}, keyName),
+    ]));
+
+  return createElement("section", { className: "keyboard-settings instruction-shortcuts" },
+    createElement("h2", { className: "section-title" }, "Keyboard shortcuts"),
+    createElement("table", { className: "shortcut-table" },
+      createElement("thead", {},
+        createElement("tr", {},
+          createElement("th", { scope: "col" }, "Key"),
+          createElement("th", { scope: "col" }, "Action"))),
+      createElement("tbody", {},
+        KEYBOARD_SHORTCUTS.map(({ action, keys }) => createElement("tr", {},
+          createKeyCell(keys),
+          createElement("td", {}, action))))));
+}
+
 function renderInstructionsPage() {
   let copiedLabelTimer = null;
   const promptInput = createElement("textarea", {
@@ -679,7 +706,8 @@ function renderInstructionsPage() {
         createInstructionStep(3, "Copy the JSON it returns", "Use the copy button on the AI's code block so you get all of the JSON."),
         createInstructionStep(4, "Create the quiz", "Paste the JSON into Create. When you see that your questions are ready, click Create quiz.",
           createElement("button", { className: "button button-secondary instruction-step-action", type: "button", onClick: () => navigate("create") }, "Go to Create")),
-        createInstructionStep(5, "Take the quiz", "Open it from Home and click Start. Choose an answer to see if you were right, then click Continue. Your score appears at the end."))));
+        createInstructionStep(5, "Take the quiz", "Open it from Home and click Start. Choose an answer to see if you were right, then click Continue. Your score appears at the end.")),
+      createKeyboardShortcutTable()));
 }
 
 /* Settings page */
@@ -740,11 +768,7 @@ function renderSettingsPage() {
       createElement("div", { className: "keyboard-settings" },
         createElement("h2", { className: "settings-group-title" }, "Keyboard"),
         createElement("section", { className: "settings-group" },
-          createShortcutRow("Choose an answer", "A–Z", "1–9"),
-          createShortcutRow("Continue", "Return"),
-          createShortcutRow("Previous question", "←"),
-          createShortcutRow("Pause or resume the timer", "P"),
-          createShortcutRow("Leave the quiz", "Esc"))),
+          KEYBOARD_SHORTCUTS.map(({ action, keys }) => createShortcutRow(action, ...keys)))),
       createElement("h2", { className: "settings-group-title" }, "Data"),
       createElement("section", { className: "settings-group" },
         localDatabase && createElement("div", { className: "settings-row" },
