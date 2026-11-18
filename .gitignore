@@ -1,0 +1,6 @@
+# This repository contains only the web version.
+/*
+!/.gitignore
+!/README.md
+!/Web/
+.DS_Store
